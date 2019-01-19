@@ -4,6 +4,30 @@ output: html_document
 ---
 
 
+###### --------- part 1 : who to update ---------
+
+## get different package from CRAN
+
+```{r}
+diff_packages()
+```
+
+## find which packages we're tracking are impacted
+
+```{r}
+aff_pkgs <- get_affected_packages()
+```
+
+
+## do part two for each package
+
+```{r}
+lapply(aff_pkgs, update_package)
+```
+
+
+###### --------------- part 2: making the update ---------
+
 ```{r}
 library(jsonlite)
 library(dplyr)
@@ -24,7 +48,42 @@ desc_query <- ghql_query(q_description, name = name, owner = owner, branchfile =
 str(desc_query$data)
 ```
 
+## create a new branch
 
 ```{r}
-pkg_deps(desc_query$data$repository$object$text)
+## JC
 ```
+
+## update the description
+
+```{r}
+dep_desc <- pkg_deps(desc_query$data$repository$object$text)
+```
+
+```{r}
+dput(dep_desc$description)
+dep_desc$deps
+```
+
+```{r}
+dep_desc$deps <- dep_desc$deps %>%
+  mutate(version = ifelse(package == "R6", ">= 0.9.0", version))
+# set_deps must be a data frame with type package version, aka
+# the same format returned from get_deps
+dep_desc$description$set_deps(dep_desc$deps)
+new_desc_string <- fansi::strip_ctl(dep_desc$description$str(), ctl = c("c0", "csi", "sgr"))
+```
+
+## update the file in the new branch
+
+```{r}
+# JC
+```
+
+## create a pull request
+
+```{r}
+## JC
+```
+
+
