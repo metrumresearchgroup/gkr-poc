@@ -25,13 +25,13 @@ pkg_deps <- function(desc_text) {
 #' }
 #' @export
 new_desc <- function(dep_desc, pkgs) {
-    for (pkg in pkgs) {
-      if (is.null(names(pkg))) {
+    for (pkg in names(pkgs)) {
+      if (is.null(pkg)) {
         stop("all pkgs must be named")
       }
       dep_desc$deps <- dep_desc$deps %>%
-        mutate(version = ifelse(package == names(pkg),
-                          sprintf(">= %s", pkg), version)
+        mutate(version = ifelse(package == pkg,
+                          sprintf(">= %s", pkgs[[pkg]]), version)
                )
     }
   # set_deps must be a data frame with type package version, aka
