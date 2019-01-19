@@ -12,6 +12,6 @@ read_schema <- function(schema) {
 #' @param ... variables to pass to the query
 #' @importFrom purrr compact
 #' @export
-ghql_query <- function(.q, ...) {
-  gh::gh("POST /graphql", query = .q, variables = compact(list(...)))
+ghql_query <- function(.q, ..., .token = Sys.getenv("GITHUB_PAT")) {
+  gh::gh("POST /graphql", query = .q, variables = compact(list(...)), .token = .token)
 }
