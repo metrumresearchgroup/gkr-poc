@@ -2,7 +2,7 @@
 #' @param schema name
 #' @export
 read_schema <- function(schema) {
-  file <- system.file(sprintf("graphql/%s.graphql", schema), package = "pkgsync")
+  file <- system.file(sprintf("graphql/%s.graphql", schema), package = "gkr")
   query <- readChar(file, file.info(file)$size)
   return(query)
 }
