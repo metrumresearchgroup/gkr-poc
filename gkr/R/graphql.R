@@ -13,5 +13,5 @@ read_schema <- function(schema) {
 #' @importFrom purrr compact
 #' @export
 ghql_query <- function(.q, ..., .token = Sys.getenv("GITHUB_PAT")) {
-  gh::gh("POST /graphql", query = .q, variables = compact(list(...)), .token = .token)
+  gh::gh("POST /graphql", query = .q, variables = purrr::compact(list(...)), .token = .token)
 }
