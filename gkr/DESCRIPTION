@@ -17,3 +17,5 @@ Imports:
     gh,
     purrr,
     dplyr
+Suggests: 
+    testthat
