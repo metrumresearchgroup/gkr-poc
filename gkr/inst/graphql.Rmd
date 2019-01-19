@@ -1,0 +1,51 @@
+---
+title: "graphql"
+output: html_document
+---
+
+
+```{r}
+library(jsonlite)
+library(dplyr)
+library(purrr)
+```
+
+```{r}
+q_description <- read_schema("description")
+```
+
+
+```{r}
+desc_query <- ghql_query(q_description, name = "logrrr", owner = "metrumresearchgroup", branchfile = "master:DESCRIPTION")
+str(desc_query$data)
+```
+
+```{r}
+get_package_metadata <- function(pkg, owner, branch = "master") {
+  desc_query <- ghql_query(q_description, 
+                           name = pkg, 
+                           owner = owner, 
+                           branchfile = sprintf("%s:DESCRIPTION", branch))
+  dsc <- withr::with_dir(tempdir(), withr::with_tempfile("DESCRIPTION", {
+      cat(desc_query$data$repository$object$text,file =  "DESCRIPTION")
+      desc::description$new()
+    }))
+  meta_df <- as.data.frame(desc_query$data$repository$ref$target, stringsAsFactors = FALSE)
+  meta_df$package <- pkg
+  meta_df$owner <- owner
+  remotes <- dsc$get_remotes()
+  if (!length(remotes)) {
+    return(list(remotes = NULL, meta = meta_df))
+  }
+  remote_names <- map_chr(strsplit(remotes, split = "/"), ~ .x[length(.x)])
+  # we should get the actual version they expect because sometimes the "remotes"
+  # falls out of date and actually can use the cran version
+  deps <- dsc$get_deps()
+  deps <- deps[deps$package %in% sort(remote_names), ] %>% arrange(package)
+  deps$dependency <- deps$package
+  deps$package <- pkg
+  deps$owner <- owner
+  deps$remotes <- remotes
+  return(list(remotes = deps, meta = meta_df))
+}
+```
