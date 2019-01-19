@@ -1,0 +1,21 @@
+query($name:String!, $owner:String!, $branchfile:String!) {
+  repository(name: $name, owner: $owner) {
+    object(expression: $branchfile) {
+      ... on Blob {
+        text
+        oid
+      }
+    }
+    ref(qualifiedName: "refs/heads/master") {
+      name
+      target {
+        ... on Commit {
+          authoredDate
+          abbreviatedOid
+          oid
+          tarballUrl
+        }
+      }
+    }
+  }
+}
