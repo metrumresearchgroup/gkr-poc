@@ -3,6 +3,7 @@ query($name:String!, $owner:String!, $branchfile:String!) {
     object(expression: $branchfile) {
       ... on Blob {
         text
+        oid
       }
     }
     ref(qualifiedName: "refs/heads/master") {

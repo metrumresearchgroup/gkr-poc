@@ -23,5 +23,28 @@ str(desc_query$data)
 ```{r}
 jc_query = ghql_query(q_description, name="r-basics", owner="dreznel", branchfile = "master:DESCRIPTION")
 jc_query
+jc_query = ghql_query(q_description, name="r-basics", owner="dreznel", branchfile = "test-branch2:hello.R")
+```
+
+```{r}
+source("../R/make-branch.R")
+# update_description_file(
+    # repository_owner,
+  # repository,
+  # path = './DESCRIPTION',
+  # commit_message,
+  # b64_content,
+  # file_sha,
+  # branch
+# )
+update_description_file(
+  repository_owner = "dreznel",
+  repository = "r-basics",
+  path = "./hello.R",
+  commit_message = "auto: IT WORKED!",
+  b64_content = jsonlite::base64_enc("Cats and Oranges"),
+  file_sha = "8dd7c2de72654f78cd40aad982e824b9deba0b08",
+  branch = "test-branch2"
+)
 ```
 
